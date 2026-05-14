@@ -1,0 +1,57 @@
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
+import Home from "./Pages/Home/Home"
+import Login from "./Pages/Login/Login"
+import Register from "./Pages/Register/Register"
+import AdminProducts from "./Pages/Admin/AdminProducts"
+import Products from "./Pages/Products/Products"
+import Checkout from "./Pages/Checkout/Checkout"
+import Navbar from "./components/layout/Navbar"
+import { useAuth } from "./context/AuthContext"
+
+const ProtectedRoute = ({ children }) => {
+  const { user } = useAuth()
+  return user ? children : <Navigate to="/login" />
+}
+
+const AdminRoute = ({ children }) => {
+  const { user } = useAuth()
+  if (!user) return <Navigate to="/login" />
+  if (user.role !== "admin") return <Navigate to="/" />
+  return children
+}
+
+function AppContent() {
+  return (
+    <div>
+      <Navbar />
+      <main className="pt-36 md:pt-40">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/productos" element={<Products />} />
+          <Route path="/checkout" element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/products" element={
+            <AdminRoute>
+              <AdminProducts />
+            </AdminRoute>
+          } />
+        </Routes>
+      </main>
+    </div>
+  )
+}
+
+const App = () => {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  )
+}
+
+export default App

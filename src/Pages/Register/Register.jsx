@@ -2,10 +2,12 @@ import { useState } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { register as registerService } from "../../api/authService"
 import { useAuth } from "../../context/AuthContext"
-import { Eye, EyeOff, User, Mail, Lock } from "lucide-react"
+import { Eye, EyeOff, User, Mail, Lock, Phone, CreditCard } from "lucide-react"
 
 const Register = () => {
-    const [form, setForm] = useState({ name: "", email: "", password: "" })
+    const [form, setForm] = useState({
+        name: "", lastname: "", email: "", password: "", rut: "", phone: ""
+    })
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
@@ -14,11 +16,31 @@ const Register = () => {
 
     const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value })
 
+    const formatRut = (value) => {
+        const clean = value.replace(/[^0-9kK]/g, "")
+        if (clean.length <= 1) return clean
+        const body = clean.slice(0, -1)
+        const dv = clean.slice(-1).toUpperCase()
+        const formatted = body.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+        return `${formatted}-${dv}`
+    }
+
+    const handleRutChange = (e) => {
+        const formatted = formatRut(e.target.value)
+        setForm({ ...form, rut: formatted })
+    }
+
+    const handlePhoneChange = (e) => {
+        const value = e.target.value.replace(/[^0-9]/g, "").slice(0, 9)
+        setForm({ ...form, phone: value })
+    }
+
     const validatePassword = (password) => {
         if (password.length < 8) return "La contraseña debe tener al menos 8 caracteres"
         if (!/[A-Z]/.test(password)) return "Debe tener al menos una mayúscula"
+        if (!/[a-z]/.test(password)) return "Debe tener al menos una minúscula"
         if (!/[0-9]/.test(password)) return "Debe tener al menos un número"
-        if (!/[!@#$%^&*]/.test(password)) return "Debe tener al menos un carácter especial (!@#$%^&*)"
+        if (/[\s¡¿`~çñÑ]/.test(password)) return "No usar espacios ni caracteres especiales (¡¿`~çñÑ)"
         return null
     }
 
@@ -26,6 +48,9 @@ const Register = () => {
         e.preventDefault()
         setLoading(true)
         setError("")
+
+        if (!form.phone.startsWith("9"))
+            return setError("El celular debe comenzar con 9"), setLoading(false)
 
         const passwordError = validatePassword(form.password)
         if (passwordError) {
@@ -35,7 +60,10 @@ const Register = () => {
         }
 
         try {
-            const res = await registerService(form)
+            const res = await registerService({
+                ...form,
+                phone: `+56${form.phone}`
+            })
             login(res.data.user, res.data.token)
             navigate("/")
         } catch (err) {
@@ -46,7 +74,7 @@ const Register = () => {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-orange-600 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-orange-600 px-4 py-10">
             <div className="w-full max-w-md">
 
                 {/* Logo */}
@@ -67,65 +95,100 @@ const Register = () => {
 
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-                        {/* Nombre */}
-                        <div className="relative">
-                            <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input
-                                type="text"
-                                name="name"
-                                placeholder="Nombre completo"
-                                value={form.name}
-                                onChange={handleChange}
-                                required
-                                className="w-full border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50"
-                            />
+                        {/* Correo */}
+                        <div className="flex flex-col gap-1">
+                            <label className="text-xs font-medium text-gray-500">Correo</label>
+                            <div className="relative">
+                                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                                <input type="email" name="email" placeholder="Ingresa un correo"
+                                    value={form.email} onChange={handleChange} required
+                                    className="w-full border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50" />
+                            </div>
                         </div>
 
-                        {/* Email */}
-                        <div className="relative">
-                            <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input
-                                type="email"
-                                name="email"
-                                placeholder="Correo electrónico"
-                                value={form.email}
-                                onChange={handleChange}
-                                required
-                                className="w-full border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50"
-                            />
+                        {/* Nombre */}
+                        <div className="flex flex-col gap-1">
+                            <label className="text-xs font-medium text-gray-500">Nombre</label>
+                            <div className="relative">
+                                <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                                <input type="text" name="name" placeholder="Ingresa un nombre"
+                                    value={form.name} onChange={handleChange} required
+                                    className="w-full border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50" />
+                            </div>
+                        </div>
+
+                        {/* Apellidos */}
+                        <div className="flex flex-col gap-1">
+                            <label className="text-xs font-medium text-gray-500">Apellidos</label>
+                            <div className="relative">
+                                <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                                <input type="text" name="lastname" placeholder="Ingresa apellidos"
+                                    value={form.lastname} onChange={handleChange} required
+                                    className="w-full border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50" />
+                            </div>
+                        </div>
+
+                        {/* RUT */}
+                        <div className="flex flex-col gap-1">
+                            <label className="text-xs font-medium text-gray-500">Tipo de documento</label>
+                            <div className="flex gap-2">
+                                <div className="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3 text-sm font-medium text-gray-600">
+                                    RUT
+                                </div>
+                                <div className="relative flex-1">
+                                    <CreditCard size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <input type="text" name="rut" placeholder="Ingresa un documento de identidad"
+                                        value={form.rut} onChange={handleRutChange} required
+                                        className="w-full border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50" />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Celular */}
+                        <div className="flex flex-col gap-1">
+                            <label className="text-xs font-medium text-gray-500">Celular</label>
+                            <div className="flex gap-2">
+                                <div className="flex items-center bg-gray-50 border border-gray-200 rounded-xl px-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                                    +56
+                                </div>
+                                <div className="relative flex-1">
+                                    <Phone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <input type="text" name="phone" placeholder="Ingresa un celular"
+                                        value={form.phone} onChange={handlePhoneChange} required
+                                        className="w-full border border-gray-200 rounded-xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50" />
+                                </div>
+                            </div>
+                            <p className="text-xs text-gray-400 px-1">Comienza con 9.</p>
                         </div>
 
                         {/* Contraseña */}
                         <div className="flex flex-col gap-1">
+                            <label className="text-xs font-medium text-gray-500">Contraseña</label>
                             <div className="relative">
                                 <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-                                <input
-                                    type={showPassword ? "text" : "password"}
-                                    name="password"
-                                    placeholder="Contraseña"
-                                    value={form.password}
-                                    onChange={handleChange}
-                                    required
-                                    className="w-full border border-gray-200 rounded-xl pl-11 pr-11 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                                >
+                                <input type={showPassword ? "text" : "password"} name="password"
+                                    placeholder="Ingresa una contraseña"
+                                    value={form.password} onChange={handleChange} required
+                                    className="w-full border border-gray-200 rounded-xl pl-11 pr-11 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-gray-50" />
+                                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
-                            <p className="text-xs text-gray-400 px-1">
-                                Mínimo 8 caracteres, una mayúscula, un número y un carácter especial (!@#$%^&*)
-                            </p>
+                            <div className="grid grid-cols-3 gap-1 mt-1">
+                                {[
+                                    "Mín. 8 caracteres", "1 número", "1 mayúscula",
+                                    "1 minúscula", "Sin espacio", "Sin usar \\¡¿`~çñÑ"
+                                ].map((req) => (
+                                    <p key={req} className="text-xs text-gray-400 flex items-center gap-1">
+                                        <span className="text-orange-400">•</span> {req}
+                                    </p>
+                                ))}
+                            </div>
                         </div>
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition disabled:opacity-60 mt-1"
-                        >
+                        <button type="submit" disabled={loading}
+                            className="bg-orange-500 text-white py-3 rounded-xl font-semibold hover:bg-orange-600 transition disabled:opacity-60 mt-1">
                             {loading ? "Registrando..." : "Registrarse"}
                         </button>
                     </form>

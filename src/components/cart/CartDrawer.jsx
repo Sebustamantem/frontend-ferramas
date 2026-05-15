@@ -74,7 +74,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                     ) : (
                         <div className="flex flex-col gap-4">
                             <div className="bg-orange-50 border border-orange-200 text-orange-700 text-xs p-3 rounded-xl text-center">
-                                ⏱️ Tu carrito se reserva por <strong>10 minutos</strong>. ¡Completa tu compra antes de que expire!
+                                Tu carrito se reserva por <strong>10 minutos</strong>. ¡Completa tu compra antes de que expire!
                             </div>
 
                             {cart.map((item) => (

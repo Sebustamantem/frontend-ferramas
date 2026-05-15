@@ -38,6 +38,16 @@ export const CartProvider = ({ children }) => {
         }
     }
 
+    const updateQuantity = async (productId, quantity) => {
+        try {
+            if (quantity < 1) return
+            await api.put(`/cart/${productId}`, { quantity })
+            await fetchCart()
+        } catch (err) {
+            console.error(err)
+        }
+    }
+
     const removeFromCart = async (productId) => {
         try {
             await api.delete(`/cart/${productId}`)
@@ -47,13 +57,20 @@ export const CartProvider = ({ children }) => {
         }
     }
 
-    const clearCart = () => setCart([])
+    const clearCart = async () => {
+        try {
+            await api.delete("/cart/clear")
+            setCart([])
+        } catch (err) {
+            console.error(err)
+        }
+    }
 
     const total = cart.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0)
     const itemCount = cart.reduce((acc, item) => acc + item.quantity, 0)
 
     return (
-        <CartContext.Provider value={{ cart, loading, addToCart, removeFromCart, clearCart, total, itemCount, fetchCart }}>
+        <CartContext.Provider value={{ cart, loading, addToCart, updateQuantity, removeFromCart, clearCart, total, itemCount, fetchCart }}>
             {children}
         </CartContext.Provider>
     )

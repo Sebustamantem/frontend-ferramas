@@ -27,10 +27,7 @@ const FeaturedProducts = () => {
     }, [])
 
     const handleAddToCart = async (productId) => {
-        if (!user) {
-            navigate("/login")
-            return
-        }
+        if (!user) { navigate("/login"); return }
         await addToCart(productId)
     }
 
@@ -62,9 +59,7 @@ const FeaturedProducts = () => {
                                 <img src={p.image_url} alt={p.name}
                                     className="w-full h-full object-contain p-4 group-hover:scale-105 transition duration-300" />
                             ) : (
-                                <div className="w-full h-full flex items-center justify-center text-gray-300 text-sm">
-                                    Sin imagen
-                                </div>
+                                <div className="w-full h-full flex items-center justify-center text-gray-300 text-sm">Sin imagen</div>
                             )}
                             <button className="absolute top-3 right-3 p-2 bg-white rounded-full shadow hover:text-red-500 transition">
                                 <Heart size={16} />
@@ -75,23 +70,19 @@ const FeaturedProducts = () => {
                                 </div>
                             )}
                         </div>
-
                         <div className="p-4">
                             <span className="text-xs text-orange-500 font-medium">{p.category}</span>
                             <h3 className="text-sm font-semibold text-gray-800 mt-1 line-clamp-2">{p.name}</h3>
                             <p className="text-xs text-gray-400 mt-1 line-clamp-1">{p.description}</p>
-
+                            <p className="text-xs text-gray-400 mt-1">Stock: {p.stock}</p>
                             <div className="flex items-center justify-between mt-3">
                                 <span className="text-lg font-bold text-gray-800">
                                     ${Number(p.price).toLocaleString("es-CL")}
                                 </span>
-                                <button
-                                    onClick={() => handleAddToCart(p.id)}
-                                    disabled={p.stock === 0}
-                                    className="flex items-center gap-1 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-200 disabled:text-gray-400 text-white text-xs px-3 py-2 rounded-xl transition"
-                                >
+                                <button onClick={() => handleAddToCart(p.id)} disabled={p.stock === 0}
+                                    className="flex items-center gap-1 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-200 disabled:text-gray-400 text-white text-xs px-3 py-2 rounded-xl transition">
                                     <ShoppingCart size={14} />
-                                    Agregar
+                                    {p.stock === 0 ? "Agotado" : "Agregar"}
                                 </button>
                             </div>
                         </div>

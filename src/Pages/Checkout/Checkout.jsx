@@ -29,11 +29,13 @@ const Checkout = () => {
         setPayLoading(true)
         try {
             const res = await api.post("/payment/create-preference", { address })
+            console.log("Preference response:", res.data)
             const url = res.data.sandbox_init_point || res.data.init_point
+            if (!url) throw new Error("No se obtuvo URL de pago")
             window.location.href = url
         } catch (err) {
+            console.error("Error pago:", err)
             alert("Error al procesar el pago. Intenta nuevamente.")
-            console.error(err)
         } finally {
             setPayLoading(false)
         }
@@ -244,7 +246,7 @@ const Checkout = () => {
                                 )}
 
                                 <p className="text-xs text-gray-400 text-center mt-3">
-                                    🔒 Pago 100% seguro con Mercado Pago
+                                    Pago 100% seguro con Mercado Pago
                                 </p>
                             </div>
                         </div>

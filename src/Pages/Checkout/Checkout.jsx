@@ -3,11 +3,13 @@ import { useCart } from "../../context/CartContext"
 import { useAuth } from "../../context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { ShoppingCart, Trash2, CreditCard, ArrowLeft } from "lucide-react"
+import api from "../../api/axios"
 
 const Checkout = () => {
     const { cart, removeFromCart, total } = useCart()
     const { user } = useAuth()
     const navigate = useNavigate()
+    const [payLoading, setPayLoading] = useState(false)
     const [address, setAddress] = useState({
         region: "", city: "", street: "", number: "", zip: "", phone: ""
     })
@@ -19,12 +21,22 @@ const Checkout = () => {
         return null
     }
 
-    const handlePay = () => {
+    const handlePay = async () => {
         if (!isAddressComplete) {
             alert("Por favor completa todos los campos de dirección")
             return
         }
-        alert("Transbank próximamente")
+        setPayLoading(true)
+        try {
+            const res = await api.post("/payment/create-preference", { address })
+            const url = res.data.sandbox_init_point || res.data.init_point
+            window.location.href = url
+        } catch (err) {
+            alert("Error al procesar el pago. Intenta nuevamente.")
+            console.error(err)
+        } finally {
+            setPayLoading(false)
+        }
     }
 
     return (
@@ -218,11 +230,11 @@ const Checkout = () => {
 
                                 <button
                                     onClick={handlePay}
-                                    disabled={!isAddressComplete}
+                                    disabled={!isAddressComplete || payLoading}
                                     className="w-full bg-orange-500 hover:bg-orange-600 disabled:bg-gray-200 disabled:text-gray-400 text-white py-4 rounded-xl font-bold text-lg transition shadow-md flex items-center justify-center gap-2"
                                 >
                                     <CreditCard size={20} />
-                                    Pagar con Transbank
+                                    {payLoading ? "Procesando..." : "Pagar con Mercado Pago"}
                                 </button>
 
                                 {!isAddressComplete && (
@@ -232,7 +244,7 @@ const Checkout = () => {
                                 )}
 
                                 <p className="text-xs text-gray-400 text-center mt-3">
-                                    🔒 Pago 100% seguro con Webpay Plus
+                                    🔒 Pago 100% seguro con Mercado Pago
                                 </p>
                             </div>
                         </div>

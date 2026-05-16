@@ -16,4 +16,8 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+
+export const createPaymentPreference = (address) =>
+    api.post("/payment/create-preference", { address })
+
 export default api;

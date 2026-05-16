@@ -134,11 +134,18 @@ const Navbar = () => {
                           <p className="text-sm font-bold text-gray-800 truncate">{user.name}</p>
                         </div>
 
+                        {/* Links Admin */}
                         {user.role === "admin" && (
-                          <Link to="/admin/products" onClick={() => setIsUserMenuOpen(false)}
-                            className="flex items-center px-5 py-3 text-sm font-semibold text-orange-600 hover:bg-orange-50 transition border-b border-gray-100">
-                            Panel Admin
-                          </Link>
+                          <>
+                            <Link to="/admin/products" onClick={() => setIsUserMenuOpen(false)}
+                              className="flex items-center px-5 py-3 text-sm font-semibold text-orange-600 hover:bg-orange-50 transition">
+                              Productos
+                            </Link>
+                            <Link to="/admin/users" onClick={() => setIsUserMenuOpen(false)}
+                              className="flex items-center px-5 py-3 text-sm font-semibold text-orange-600 hover:bg-orange-50 transition border-b border-gray-100">
+                              Usuarios
+                            </Link>
+                          </>
                         )}
 
                         <Link to="/perfil" onClick={() => setIsUserMenuOpen(false)}

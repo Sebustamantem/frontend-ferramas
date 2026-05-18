@@ -1,11 +1,12 @@
 import { useState } from "react"
-import { useNavigate, Link } from "react-router-dom"
+import { useNavigate, Link, useSearchParams } from "react-router-dom"
 import { register as registerService } from "../../api/authService"
 import { useAuth } from "../../context/AuthContext"
 import { Eye, EyeOff, User, Mail, Lock, Phone, CreditCard, Briefcase, Building } from "lucide-react"
 
 const RegisterPro = () => {
-    const [userType, setUserType] = useState("maestro")
+    const [searchParams] = useSearchParams()
+    const [userType, setUserType] = useState(searchParams.get("type") || "maestro")
     const [form, setForm] = useState({
         name: "", lastname: "", email: "", password: "",
         rut: "", phone: "", business_name: "", profession: ""

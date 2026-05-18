@@ -66,17 +66,7 @@ const ProBanner = () => {
                     </div>
                 </div>
 
-                {/* Lado derecho - íconos decorativos */}
-                <div className="hidden sm:flex items-center justify-center gap-4">
-                    <div className="flex flex-col gap-4">
-                        <div className="w-16 h-16 bg-orange-500 rounded-2xl flex items-center justify-center">
-                            <Hammer size={32} className="text-white" />
-                        </div>
-                        <div className="w-16 h-16 bg-gray-700 rounded-2xl flex items-center justify-center">
-                            <Building size={32} className="text-white" />
-                        </div>
-                    </div>
-                </div>
+
             </div>
         </section>
     )

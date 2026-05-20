@@ -12,6 +12,7 @@ import Failure from "./Pages/Checkout/Failure"
 import Pending from "./Pages/Checkout/Pending"
 import Welcome from "./Pages/Pro/Welcome"
 import OrderHistory from "./Pages/Orders/OrderHistory"
+import Profile from "./Pages/Profile/Profile"
 import Navbar from "./components/layout/Navbar"
 import { useAuth } from "./context/AuthContext"
 
@@ -43,7 +44,8 @@ function AppContent() {
           <Route path="/checkout/success" element={<Success />} />
           <Route path="/checkout/failure" element={<Failure />} />
           <Route path="/checkout/pending" element={<Pending />} />
-          +          <Route path="/mis-pedidos" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
+          <Route path="/mis-pedidos" element={<ProtectedRoute><OrderHistory /></ProtectedRoute>} />
+          <Route path="/perfil" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
           <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
         </Routes>

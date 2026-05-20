@@ -38,6 +38,21 @@ const Checkout = () => {
         }
     }, [isPro])
 
+    useEffect(() => {
+        if (!user) return
+        if (user.address) {
+            setAddress((prev) => ({ ...prev, ...user.address }))
+            return
+        }
+        api.get("/users/me")
+            .then((res) => {
+                if (res.data.address) {
+                    setAddress((prev) => ({ ...prev, ...res.data.address }))
+                }
+            })
+            .catch(() => { })
+    }, [user])
+
     if (!user) {
         navigate("/login")
         return null
@@ -202,8 +217,8 @@ const Checkout = () => {
                                                             <button key={n} type="button"
                                                                 onClick={() => setInstallments(n)}
                                                                 className={`flex-1 py-2 rounded-xl text-sm font-semibold transition ${installments === n
-                                                                        ? "bg-gray-900 text-white"
-                                                                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                                                    ? "bg-gray-900 text-white"
+                                                                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                                                                     }`}>
                                                                 {n}
                                                             </button>

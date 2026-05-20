@@ -10,6 +10,14 @@ const Profile = () => {
         email: "",
         phone: "",
         password: "",
+        address: {
+            region: "",
+            city: "",
+            street: "",
+            number: "",
+            zip: "",
+            phone: "",
+        },
     })
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
@@ -26,6 +34,14 @@ const Profile = () => {
                     email: res.data.email || "",
                     phone: res.data.phone || "",
                     password: "",
+                    address: res.data.address || {
+                        region: "",
+                        city: "",
+                        street: "",
+                        number: "",
+                        zip: "",
+                        phone: "",
+                    },
                 })
             } catch (err) {
                 setError("No pudimos cargar tu perfil. Inténtalo de nuevo.")
@@ -49,6 +65,7 @@ const Profile = () => {
                 lastname: form.lastname,
                 email: form.email,
                 phone: form.phone,
+                address: form.address,
             }
             if (form.password) payload.password = form.password
 
@@ -145,6 +162,68 @@ const Profile = () => {
                                 value={form.phone}
                                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
                                 className="mt-2 w-full rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
+                            />
+                        </label>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-3xl border border-gray-200 p-6">
+                        <h2 className="text-base font-semibold text-gray-800 mb-4">Dirección de envío</h2>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <label className="block">
+                                <span className="text-sm text-gray-600">Región</span>
+                                <input
+                                    type="text"
+                                    value={form.address.region}
+                                    onChange={(e) => setForm({ ...form, address: { ...form.address, region: e.target.value } })}
+                                    className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
+                                />
+                            </label>
+                            <label className="block">
+                                <span className="text-sm text-gray-600">Ciudad</span>
+                                <input
+                                    type="text"
+                                    value={form.address.city}
+                                    onChange={(e) => setForm({ ...form, address: { ...form.address, city: e.target.value } })}
+                                    className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
+                                />
+                            </label>
+                        </div>
+                        <label className="block mt-4">
+                            <span className="text-sm text-gray-600">Dirección</span>
+                            <input
+                                type="text"
+                                value={form.address.street}
+                                onChange={(e) => setForm({ ...form, address: { ...form.address, street: e.target.value } })}
+                                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
+                            />
+                        </label>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 mt-4">
+                            <label className="block">
+                                <span className="text-sm text-gray-600">Número / Depto</span>
+                                <input
+                                    type="text"
+                                    value={form.address.number}
+                                    onChange={(e) => setForm({ ...form, address: { ...form.address, number: e.target.value } })}
+                                    className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
+                                />
+                            </label>
+                            <label className="block">
+                                <span className="text-sm text-gray-600">Código postal</span>
+                                <input
+                                    type="text"
+                                    value={form.address.zip}
+                                    onChange={(e) => setForm({ ...form, address: { ...form.address, zip: e.target.value } })}
+                                    className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
+                                />
+                            </label>
+                        </div>
+                        <label className="block mt-4">
+                            <span className="text-sm text-gray-600">Teléfono de entrega</span>
+                            <input
+                                type="text"
+                                value={form.address.phone}
+                                onChange={(e) => setForm({ ...form, address: { ...form.address, phone: e.target.value } })}
+                                className="mt-2 w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-100"
                             />
                         </label>
                     </div>
